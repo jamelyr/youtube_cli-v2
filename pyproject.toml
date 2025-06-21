@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "youtube-cli-app"
+version = "1.0.0"
+authors = [
+    { name = "Marley", email = "your_email@example.com" },
+]
+description = "A modern, feature-rich TUI for searching and playing YouTube videos."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+    "textual==0.70.0", # Pinning versions is good practice
+    "yt-dlp>=2024.07.25",
+    "python-mpv>=1.0.5"
+]
+
+[project.scripts]
+# This is the magic line. It creates a system-wide command named 'youtube-cli'
+# that runs the 'main' function in our '__main__.py' file.
+youtube-cli = "youtube_cli.__main__:main"
+
+[tool.setuptools.package-data]
+# This tells the installer to include our CSS file in the final package.
+youtube_cli = ["*.css"]

@@ -1,0 +1,4 @@
+# Pinning versions ensures a stable, reproducible environment.
+textual~=0.60.0
+yt-dlp>=2024.03.10
+python-mpv>=1.0.5

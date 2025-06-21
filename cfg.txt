@@ -1,0 +1,5 @@
+{
+    "volume": 100,
+    "autoplay": true,
+    "default_quality": "bestvideo[height<=480]+bestaudio/best[height<=1080]"
+}
