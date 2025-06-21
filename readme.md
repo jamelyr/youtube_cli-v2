@@ -2,8 +2,6 @@
 
 A modern, fast, and feature-rich TUI for searching and playing YouTube videos from your terminal.
 
-![Screenshot of YouTube CLI in action](https://your-image-host.com/youtube-cli-screenshot.png) 
-*(**Action Required:** Replace this with a link to a real screenshot of the app!)*
 
 This application provides a keyboard-driven interface to YouTube, built with Python and the Textual framework. It's designed for developers and power-users who prefer to stay in the terminal.
 
@@ -36,7 +34,7 @@ An installation script is provided to automate the setup.
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/jamelyr/youtube-cli.git
+    git clone https://github.com/jamelyr/youtube_cli-v2.git
     cd youtube-cli
     ```
 
