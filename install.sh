@@ -1,61 +1,94 @@
 #!/bin/bash
+#
+# YouTube CLI Installer (Definitive Symlink Method)
+# This script creates an isolated environment for the application and then
+# creates a symbolic link to make the command globally available for the user.
+# This respects modern, externally-managed Python environments (PEP 668).
+#
 
-# This script installs the dependencies for the Advanced YouTube CLI.
-# It installs Python packages via pip and attempts to install the 'mpv' media player.
+# Exit immediately if a command exits with a non-zero status.
+set -e
 
-echo "--- Advanced YouTube CLI Installer ---"
-
-# --- Step 1: Install Python dependencies ---
+echo "--- YouTube CLI Definitive Installer ---"
 echo ""
-echo "[1/2] Installing Python packages from requirements.txt..."
 
-# It's highly recommended to run this in a virtual environment.
-# python3 -m venv venv
-# source venv/bin/activate
+# --- Dependency Check ---
+echo "Step 1: Checking for required system dependencies..."
 
-pip install -r requirements.txt
-
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to install Python packages. Please check your pip and Python setup."
+if ! command -v python3 &> /dev/null; then
+    echo "ERROR: python3 is not installed. Please install Python 3.8+ and try again."
     exit 1
 fi
+echo "✅ Python 3 found."
 
-echo "Python packages installed successfully."
-
-# --- Step 2: Install MPV media player ---
+if ! command -v mpv &> /dev/null; then
+    echo "ERROR: mpv is not installed. Please install mpv using your package manager."
+    exit 1
+fi
+echo "✅ mpv found."
 echo ""
-echo "[2/2] Checking for and installing 'mpv' media player..."
-echo "This may require you to enter your administrator (sudo) password."
 
-# Check for package manager and install mpv
-if command -v apt-get &> /dev/null; then
-    # Debian/Ubuntu
-    echo "Detected apt-get. Installing mpv..."
-    sudo apt-get update
-    sudo apt-get install mpv -y
-elif command -v dnf &> /dev/null; then
-    # Fedora/CentOS
-    echo "Detected dnf. Installing mpv..."
-    sudo dnf install mpv -y
-elif command -v pacman &> /dev/null; then
-    # Arch Linux
-    echo "Detected pacman. Installing mpv..."
-    sudo pacman -Syu --noconfirm mpv
-elif command -v brew &> /dev/null; then
-    # macOS with Homebrew
-    echo "Detected Homebrew. Installing mpv..."
-    brew install mpv
+# --- Step 2: Create the Isolated Engine (Virtual Environment) ---
+VENV_DIR="venv"
+echo "Step 2: Building isolated application engine in './${VENV_DIR}'..."
+if [ -d "$VENV_DIR" ]; then
+    echo "--> Engine directory already exists. Re-validating."
 else
-    echo "Could not detect a supported package manager (apt, dnf, pacman, brew)."
-    echo "Please install 'mpv' manually from your system's package manager or from https://mpv.io/installation/"
-    exit 1
+    python3 -m venv "$VENV_DIR"
+    echo "--> Engine directory created."
 fi
-
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to install 'mpv'. Please try installing it manually."
-    exit 1
-fi
-
+# Activate the venv for the context of this script
+source "${VENV_DIR}/bin/activate"
+echo "--> Engine activated for installation."
 echo ""
-echo "--- Installation Complete! ---"
-echo "You can now run the application with: python3 youtube_cli.py"
+
+# --- Step 3: Install Application into the Isolated Engine ---
+echo "Step 3: Installing application and dependencies into the engine..."
+# We use pip to install into the now-active venv. This is safe.
+pip install --upgrade pip
+pip install -e .
+echo "--> Application installed successfully."
+echo ""
+
+# --- Step 4: Forge the Global Key (Symbolic Link) ---
+USER_BIN_DIR="$HOME/.local/bin"
+EXECUTABLE_NAME="youtube-cli"
+SYMLINK_PATH="${USER_BIN_DIR}/${EXECUTABLE_NAME}"
+VENV_EXECUTABLE_PATH="$(pwd)/${VENV_DIR}/bin/${EXECUTABLE_NAME}"
+
+echo "Step 4: Forging global command key..."
+# Ensure the user's local bin directory exists
+mkdir -p "$USER_BIN_DIR"
+echo "--> Ensured '$USER_BIN_DIR' directory exists."
+
+# Remove any old symlink to ensure we're creating a fresh one
+if [ -L "${SYMLINK_PATH}" ]; then
+    rm -f "${SYMLINK_PATH}"
+    echo "--> Removed old key."
+fi
+
+# Create the symbolic link
+ln -s "$VENV_EXECUTABLE_PATH" "$SYMLINK_PATH"
+echo "--> Forged new key at '$SYMLINK_PATH'."
+echo ""
+
+# --- Step 5: PATH Verification ---
+echo "Step 5: Verifying key is in system PATH..."
+if [[ ":$PATH:" != *":$USER_BIN_DIR:"* ]]; then
+    echo "⚠️  WARNING: Your PATH does not seem to include '$USER_BIN_DIR'."
+    echo "    The 'youtube-cli' command may not be available until you log out and log back in,"
+    echo "    or add the following line to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
+    echo ""
+    echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
+    echo ""
+else
+    echo "✅ Your PATH is correctly configured to find the key."
+fi
+
+# --- Final Instructions ---
+echo "--- ✅ DEPLOYMENT COMPLETE ---"
+echo ""
+echo "To run the application, open a NEW terminal session and simply type:"
+echo ""
+echo "   youtube-cli"
+echo ""

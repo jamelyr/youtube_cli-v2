@@ -317,30 +317,24 @@ class YouTubeCLI(App[None]):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        with Horizontal(id="main-container"):
-            with Vertical(id="left-pane"):
-                yield Input(placeholder="Search YouTube...", id="search-input")
+        with Container():
+            yield Input(placeholder="Search YouTube...", id="search-input")
+            with Horizontal():
                 yield DataTable(id="video-table")
-            with Vertical(id="right-pane"):
-                yield NowPlayingWidget()
-                yield Label(f"Volume: {self.state.volume}%", id="volume-label")
-                yield ProgressBar(id="progress-bar", total=100, show_eta=False)
+                with Vertical(id="sidebar"):
+                    yield NowPlayingWidget()
+                    yield Label(f"Volume: {self.state.volume}%", id="volume-label")
+            yield ProgressBar(id="progress-bar", total=100, show_eta=False)
         yield Footer()
 
     def on_mount(self) -> None:
-        """Called when the app is mounted."""
-        table = self.query_one(DataTable)
+        table = self.query_one("#video-table", DataTable)
         table.add_columns("Title", "Uploader", "Duration")
         table.cursor_type = "row"
-        self.query_one(Input).focus()
+        self.query_one("#search-input").focus()
+        self.query_one("#video-table").border_title = "Search Results"
+        self.query_one("#sidebar").border_title = "Playback"
         self.update_ui_from_state()
-
-    def action_toggle_focus(self):
-        """Toggle focus between the search input and the video table."""
-        if self.query_one(Input).has_focus:
-            self.query_one(DataTable).focus()
-        else:
-            self.query_one(Input).focus()
         
     def on_unmount(self) -> None:
         self.player.cleanup()

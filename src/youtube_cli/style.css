@@ -1,128 +1,116 @@
 /*
-    youtube_cli.css (Professional Version)
-    This stylesheet works with the Python change to provide a polished UI.
+    A modern, functional, and beautiful dark theme for the YouTube CLI.
+    This stylesheet is designed to be clean, readable, and easy on the eyes.
 */
 
-/* --- Base & Layout --- */
+/* --- Base & Global Layout --- */
 Screen {
-    background: #1e1e1e;
-    color: #cccccc;
+    background: #0d1117; /* A deep, dark blue, like GitHub's dark theme */
+    color: #c9d1d9;      /* Light grey text for good contrast */
     layout: vertical;
 }
 
-Header {
-    background: #252526;
-    color: #cccccc;
+Header, Footer {
+    background: #161b22;
+    color: #58a6ff;      /* A pleasant blue for accents */
+    text-style: bold;
     dock: top;
     height: 1;
 }
 
 Footer {
-    background: #252526;
-    color: #cccccc;
     dock: bottom;
-    height: 1;
 }
 
 /* --- Main Content Area --- */
-Container {
-    padding: 0 1;
-    layout: vertical;
+#main-container {
+    padding: 1;
+    layout: horizontal;
+    height: 1fr; /* Ensure it takes up all available vertical space */
 }
 
-Horizontal {
-    height: 1fr;
-    margin-top: 1;
+#left-pane {
+    width: 2fr; /* Give more space to the results */
+    padding-right: 1;
+    border: none;
+}
+
+#right-pane {
+    width: 1fr;
+    border: none;
 }
 
 /* --- Search Input --- */
-Input {
-    background: #3c3c3c;
-    border: tall #555555;
+#search-input {
+    background: #0d1117;
+    border: round #30363d; /* Rounded, subtle border */
     padding: 0 1;
+    margin-bottom: 1;
+    height: 3;
 }
 
-Input:focus {
-    border: tall #007acc; /* Accent color for focus */
+#search-input:focus {
+    border: round #58a6ff; /* Highlight with accent color on focus */
 }
 
 /* --- Video Results Table --- */
-DataTable {
-    width: 2fr;
-    height: 100%;
-    margin-right: 1;
-    background: #252526;
-    border: heavy #444444;
-    /* The border-title style is now applied to the title set in Python */
-    border-title-align: left;
-    border-title-color: #999999;
+#video-table {
+    background: #161b22;
+    border: round #30363d;
 }
 
-DataTable .datatable--header {
-    background: #333333;
-    color: #bbbbbb;
+#video-table .datatable--header {
+    background: #21262d;
+    color: #8b949e;
     text-style: bold;
 }
 
-DataTable > .datatable--cursor {
-    background: #007acc;
+#video-table > .datatable--cursor {
+    background: #58a6ff;
     color: #ffffff;
     text-style: bold;
 }
 
-DataTable:focus > .datatable--cursor {
-    background: #009eff;
-}
-
-DataTable .datatable--row-odd {
-    background: #2a2a2a;
+#video-table:focus > .datatable--cursor {
+    background: #388bfd; /* Slightly different blue for focused table cursor */
 }
 
 /* --- Sidebar & Now Playing Widget --- */
-#sidebar {
-    width: 1fr;
-    height: 100%;
-    background: #252526;
-    border: heavy #444444;
-    padding: 0 1;
-    /* The border-title style is now applied to the title set in Python */
-    border-title-align: left;
-    border-title-color: #999999;
-}
-
 NowPlayingWidget {
-    height: auto;
-    padding-bottom: 1;
+    background: #161b22;
+    border: round #30363d;
+    padding: 1;
+    margin-bottom: 1;
 }
 
 #now-playing-header {
-    margin: 1 0;
-    text-align: center;
-    text-style: underline;
+    color: #58a6ff;
+    text-style: bold;
+    margin-bottom: 1;
 }
 
 #now-playing-title, #now-playing-uploader, #now-playing-status, #now-playing-timer, #queue-status {
-    margin-top: 1;
+    margin-bottom: 1;
 }
 
 #queue-status {
-    color: #aaaaaa;
+    color: #8b949e;
     text-style: italic;
 }
 
+/* --- Volume & Progress --- */
 #volume-label {
     text-align: center;
     margin-top: 1;
-    color: #999999;
+    color: #8b949e;
 }
 
-/* --- Progress Bar --- */
-ProgressBar {
+#progress-bar {
     margin-top: 1;
     height: 1;
-    background: #444444;
+    background: #30363d;
 }
 
-ProgressBar .progressbar--bar {
-    background: #007acc;
+#progress-bar .progressbar--bar {
+    background: #58a6ff;
 }
